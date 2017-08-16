@@ -1,0 +1,78 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXFileReference section */
+		60B8FCD61F365918007EA6B5 /* index.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
+		60B8FCD71F365B55007EA6B5 /* transfer.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = transfer.html; sourceTree = "<group>"; };
+		60B8FCD81F366598007EA6B5 /* transfer.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = transfer.js; sourceTree = "<group>"; };
+		60B8FCD91F366775007EA6B5 /* bundle.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = bundle.js; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		60B8FCCF1F36583C007EA6B5 = {
+			isa = PBXGroup;
+			children = (
+				60B8FCD61F365918007EA6B5 /* index.html */,
+				60B8FCD71F365B55007EA6B5 /* transfer.html */,
+				60B8FCD81F366598007EA6B5 /* transfer.js */,
+				60B8FCD91F366775007EA6B5 /* bundle.js */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXProject section */
+		60B8FCD01F36583C007EA6B5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0830;
+			};
+			buildConfigurationList = 60B8FCD31F36583C007EA6B5 /* Build configuration list for PBXProject "IOTA PoWer" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 60B8FCCF1F36583C007EA6B5;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		60B8FCD41F36583C007EA6B5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		60B8FCD51F36583C007EA6B5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		60B8FCD31F36583C007EA6B5 /* Build configuration list for PBXProject "IOTA PoWer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				60B8FCD41F36583C007EA6B5 /* Debug */,
+				60B8FCD51F36583C007EA6B5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 60B8FCD01F36583C007EA6B5 /* Project object */;
+}
