@@ -1,57 +1,55 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var IOTA = require('/Users/rajiv/iota.lib.js/lib/iota');
-// Create IOTA instance with host and port as provider
-var iota = new IOTA({
-                    'host': 'http://rajiv-shah.ddns.net',
-                    'port': 14265
-                    });
+  var IOTA = require('/Users/rajiv/iota.lib.js/lib/iota');
+  // Create IOTA instance with host and port as provider
+  var iota = new IOTA({
+    'host': 'http://rajiv-shah.ddns.net',
+    'port': 14265
+  });
 
-//var seed = "";
-
-
+  var seed = "";
 
 
-//function setSeed() {
-//    seed = document.getElementById('seedHTML');
-//    console.log(seed);
-//};
 
-function printSeed(seedHTML) {
-    console.log(seedHTML);
-};
+  function setSeed(seed) {
+    seed = document.getElementById('seedHTML');
+    console.log(seed);
+  };
 
+  function printSeed(seedHTML) {
+    console.log(document.getElementById('seedHTML').value);
+  };
 
-function generateAddresses() {
+  function generateAddresses() {
 
     for (i = 0; i < 1; i++) {
-        iota.api.getNewAddress(seed.toUpperCase(), {'index': 0, 'total': 5}, function(_, addresses) {
+      iota.api.getNewAddress(seed.toUpperCase(), {'index': 0, 'total': 5}, function(_, addresses) {
 
-                               getBalance(addresses); //Calls the getBalance function with all generated addresses as argument
+        getBalance(addresses); //Calls the getBalance function with all generated addresses as argument
 
-                               });
+      });
     };
-};
-function getBalance(addresses) {
+  };
+  function getBalance(addresses) {
     iota.api.getBalances(addresses, 100, function(error, inputs) {
-                         var i = 0;
-                         var totalValue = 0;
-                         if(inputs != null && inputs.balances != null) {
-                         inputs.balances.forEach(function(balance) {
-                                                 totalValue += parseInt(balance);
-                                                 if (parseInt(balance) > 0) {
-                                                 console.log(i+1 + " The address " + addresses[i] + " has a balance of: " + parseInt(balance));
-                                                 console.log("Balance detected!!!");
-                                                 } else {
-                                                 console.log(i+1 + " The address " + addresses[i] + " has a balance of: " + parseInt(balance));
-                                                 };
-                                                 i++
-                                                 })
-                         } else {
-                         console.log(error);
-                         }
-                         console.log("All addresses of this seeds contain " + totalValue + " tokens!")
-                         });
-}
+      var i = 0;
+      var totalValue = 0;
+      if(inputs != null && inputs.balances != null) {
+        inputs.balances.forEach(function(balance) {
+          totalValue += parseInt(balance);
+          if (parseInt(balance) > 0) {
+            console.log(i+1 + " The address " + addresses[i] + " has a balance of: " + parseInt(balance));
+            console.log("Balance detected!!!");
+          } else {
+            console.log(i+1 + " The address " + addresses[i] + " has a balance of: " + parseInt(balance));
+          };
+          i++
+        })
+      } else {
+        console.log(error);
+      }
+      console.log("All addresses of this seeds contain " + totalValue + " tokens!")
+    });
+  }
 
 },{"/Users/rajiv/iota.lib.js/lib/iota":10}],2:[function(require,module,exports){
 var apiCommands = require('./apiCommands')

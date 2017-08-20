@@ -1,67 +1,65 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta name="generator" content="HTML Tidy for Linux (vers 25 March 2009), see www.w3.org" />
   <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/spacelab/bootstrap.min.css" rel="stylesheet" integrity="sha384-L/tgI3wSsbb3f/nW9V6Yqlaw3Gj7mpE56LWrhew/c8MIhAYWZ/FNirA64AVkB5pI" crossorigin="anonymous" />
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" />
-  <script src = "bundle.js"></script>
   <title>IOTA PoWer - Let us do the work</title>
 </head>
 <body>
   <nav class="navbar navbar-default">
-      <div class="container-fluid">
-          <div class="navbar-header">
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                  <span class="sr-only">Toggle navigation</span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-              </button>
-              <a class="navbar-brand" href="index.html">IOTA PoWer</a>
-          </div>
-
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-        <li><a href="index.html">About</a></li>
-
-        <li class="active"><a href="#">Transfer <span class=
-        "sr-only">(current)</span></a></li>
-
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-          aria-expanded="false">Dropdown</a>
-
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="#">Action</a></li>
-
-            <li><a href="#">Another action</a></li>
-
-            <li><a href="#">Something else here</a></li>
-
-            <li><a href="#">Separated link</a></li>
-
-            <li><a href="#">One more separated link</a></li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-
-    <form method="post" id="rendered-form">
-      <div class="fb-text form-group field-seed">
-        <label for="seedHTML" class="fb-text-label">Enter your seed to begin. It will not
-        be sent outside of your browser.</label><input type="text" class="form-control"
-        name="seedHTML" maxlength="81" id="seedHTML" />
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">IOTA PoWer</a>
       </div>
 
-      <form id="rendered-form">
-        <div class="fb-button form-group field-submit">
-          <button type="button" class="btn btn-default c1" name="submit" id=
-          "submit" onclick="printSeed(seedHTML)">Submit</button>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li><a href="index.html">About</a></li>
+
+          <li class="active"><a href="#">Transfer <span class=
+            "sr-only">(current)</span></a></li>
+
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+              aria-expanded="false">Dropdown</a>
+
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Action</a></li>
+
+                <li><a href="#">Another action</a></li>
+
+                <li><a href="#">Something else here</a></li>
+
+                <li><a href="#">Separated link</a></li>
+
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li>
+          </ul>
         </div>
-      </form>
-    </form>
-  </div>
-</body>
-</html>
+
+        <form method="post" id="rendered-form">
+          <div class="fb-text form-group field-seed">
+            <label for="seedHTMLFieldInstructions" class="fb-text-label">Enter your seed to begin. It will not
+              be sent outside of your browser.</label><input type="text" class="form-control"
+              name="seedHTML" maxlength="81" id="seedHTML" />
+              <br />
+              <button type="button" class="btn btn-default c1" id=
+              "submit" onclick="setSeed(seedHTML);generateAddresses();">Submit</button>
+            </div>
+          </form>
+        </form>
+      </div>
+      <script type = "text/javascript" src = "bundle.js"></script>
+
+    </body>
+    </html>
