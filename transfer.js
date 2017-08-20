@@ -8,6 +8,8 @@ var iota = new IOTA({
 var seed = "0";
 
 
+
+
 //function setSeed() {
 //    seed = document.getElementById('seedHTML');
 //    console.log(seed);
@@ -19,12 +21,12 @@ function printSeed(seedHTML) {
 
 
 function generateAddresses() {
-    
+
     for (i = 0; i < 1; i++) {
         iota.api.getNewAddress(seed.toUpperCase(), {'index': 0, 'total': 5}, function(_, addresses) {
-                               
+
                                getBalance(addresses); //Calls the getBalance function with all generated addresses as argument
-                               
+
                                });
     };
 };
