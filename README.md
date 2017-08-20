@@ -1,2 +1,2 @@
 # IOTA PoWer
-IOTA PoWer is a service that allows you to outsource your PoW to a server for a nominal fee.
+IOTA PoWer is a service that allows you to outsource your PoW (Proof of Work) to a server for a nominal fee.
