@@ -18,7 +18,7 @@ var iota = new IOTA({
 
 function printSeed(seedHTML) {
     console.log(seedHTML);
-}
+};
 
 
 function generateAddresses() {
