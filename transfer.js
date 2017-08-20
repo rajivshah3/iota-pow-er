@@ -5,7 +5,7 @@ var iota = new IOTA({
                     'port': 14265
                     });
 
-var seed = "0";
+//var seed = "";
 
 
 
@@ -16,7 +16,7 @@ var seed = "0";
 //};
 
 function printSeed(seedHTML) {
-    console.log(seed);
+    console.log(seedHTML);
 }
 
 
