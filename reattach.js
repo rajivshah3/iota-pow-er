@@ -4,3 +4,11 @@ var iota = new IOTA({
   'host': 'http://rajiv-shah.ddns.net',
   'port': 14265
 });
+
+
+var txHash = "";
+
+function setTxHash(txHash) {
+  txHash = document.getElementById('reattachTxHash');
+  console.log(txHash);
+};
