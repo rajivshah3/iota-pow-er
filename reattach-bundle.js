@@ -1,37 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var IOTA = require('/Users/rajiv/iota.lib.js/lib/iota');
-// Create IOTA instance with host and port as provider
-var iota = new IOTA({
-  'host': 'http://rajiv-shah.ddns.net',
-  'port': 14265
-});
-
-
-var txHash = "";
-
-
-function reattachTx(txHash){
-var quote = "'"
-var quoted = quote.concat(txHash);
-var quotedTxHash = quoted.concat(quote);
-document.getElementById("status").innerHTML = "Reattaching..."
-iota.api.replayBundle(quotedTxHash,
- 3, 15, function(e,s){console.log(s)});
-
-}
-
-
-function setTxHash(txHash) {
-  txHash = document.getElementById('reattachTxHash');
-  reattachTx(txHash);
-};
-
-function onSubmit(token) {
-  console.log("Success");
-    setTxHash('reattachTxHash');
-  };
-
-},{"/Users/rajiv/iota.lib.js/lib/iota":10}],2:[function(require,module,exports){
 var apiCommands = require('./apiCommands')
 var errors = require('../errors/inputErrors');
 var inputValidator = require('../utils/inputValidator');
@@ -1679,7 +1646,7 @@ api.prototype.getAccountData = function(seed, options, callback) {
 
 module.exports = api;
 
-},{"../crypto/bundle":4,"../crypto/converter":5,"../crypto/curl":6,"../crypto/signing":7,"../errors/inputErrors":8,"../utils/inputValidator":13,"../utils/utils":15,"./apiCommands":3,"async":16}],3:[function(require,module,exports){
+},{"../crypto/bundle":3,"../crypto/converter":4,"../crypto/curl":5,"../crypto/signing":6,"../errors/inputErrors":7,"../utils/inputValidator":12,"../utils/utils":14,"./apiCommands":2,"async":16}],2:[function(require,module,exports){
 /**
 *   @method attachToTangle
 *   @param {string} trunkTransaction
@@ -1915,7 +1882,7 @@ module.exports = {
     storeTransactions           : storeTransactions
 }
 
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 var Curl = require("./curl");
 var Converter = require("./converter");
 
@@ -2072,7 +2039,7 @@ Bundle.prototype.normalizedBundle = function(bundleHash) {
 
 module.exports = Bundle;
 
-},{"./converter":5,"./curl":6}],5:[function(require,module,exports){
+},{"./converter":4,"./curl":5}],4:[function(require,module,exports){
 /**
 *
 *   Conversion functions
@@ -2215,7 +2182,7 @@ module.exports = {
     value   : value
 };
 
-},{}],6:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var Converter = require("./converter");
 
 /**
@@ -2306,7 +2273,7 @@ Curl.prototype.transform = function() {
 
 module.exports = Curl
 
-},{"./converter":5}],7:[function(require,module,exports){
+},{"./converter":4}],6:[function(require,module,exports){
 var Curl = require("./curl");
 var Converter = require("./converter");
 var Bundle = require("./bundle");
@@ -2525,7 +2492,7 @@ module.exports = {
     validateSignatures  : validateSignatures
 }
 
-},{"./bundle":4,"./converter":5,"./curl":6}],8:[function(require,module,exports){
+},{"./bundle":3,"./converter":4,"./curl":5}],7:[function(require,module,exports){
 
 module.exports = {
 
@@ -2555,7 +2522,7 @@ module.exports = {
     }
 }
 
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 
 module.exports = {
 
@@ -2570,7 +2537,7 @@ module.exports = {
   }
 }
 
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var utils = require("./utils/utils");
 var makeRequest = require('./utils/makeRequest');
 var api = require("./api/api");
@@ -2623,7 +2590,7 @@ IOTA.prototype.changeNode = function(settings) {
 
 module.exports = IOTA;
 
-},{"./api/api":2,"./multisig/multisig":11,"./utils/inputValidator":13,"./utils/makeRequest":14,"./utils/utils":15}],11:[function(require,module,exports){
+},{"./api/api":1,"./multisig/multisig":10,"./utils/inputValidator":12,"./utils/makeRequest":13,"./utils/utils":14}],10:[function(require,module,exports){
 var Signing = require('../crypto/signing');
 var Converter = require('../crypto/converter');
 var Curl = require('../crypto/curl');
@@ -3006,7 +2973,7 @@ Multisig.prototype.addSignature = function(bundleToSign, inputAddress, key, call
 
 module.exports = Multisig;
 
-},{"../crypto/bundle":4,"../crypto/converter":5,"../crypto/curl":6,"../crypto/signing":7,"../errors/inputErrors":8,"../utils/inputValidator":13,"../utils/utils":15}],12:[function(require,module,exports){
+},{"../crypto/bundle":3,"../crypto/converter":4,"../crypto/curl":5,"../crypto/signing":6,"../errors/inputErrors":7,"../utils/inputValidator":12,"../utils/utils":14}],11:[function(require,module,exports){
 //
 //  Conversion of ascii encoded bytes to trytes.
 //  Input is a string (can be stringified JSON object), return value is Trytes
@@ -3097,7 +3064,7 @@ module.exports = {
     fromTrytes: fromTrytes
 }
 
-},{}],13:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /**
 *   checks if input is correct address
 *
@@ -3461,7 +3428,7 @@ module.exports = {
     isUri: isUri
 }
 
-},{}],14:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var errors = require("../errors/requestErrors");
 
@@ -3657,7 +3624,7 @@ makeRequest.prototype.prepareResult = function(result, requestCommand, callback)
 
 module.exports = makeRequest;
 
-},{"../errors/requestErrors":9,"xmlhttprequest":17}],15:[function(require,module,exports){
+},{"../errors/requestErrors":8,"xmlhttprequest":17}],14:[function(require,module,exports){
 var inputValidator = require("./inputValidator");
 var makeRequest = require("./makeRequest");
 var Curl = require("../crypto/curl");
@@ -4011,7 +3978,40 @@ module.exports = {
     validateSignatures  : validateSignatures
 }
 
-},{"../crypto/converter":5,"../crypto/curl":6,"../crypto/signing":7,"./asciiToTrytes":12,"./inputValidator":13,"./makeRequest":14}],16:[function(require,module,exports){
+},{"../crypto/converter":4,"../crypto/curl":5,"../crypto/signing":6,"./asciiToTrytes":11,"./inputValidator":12,"./makeRequest":13}],15:[function(require,module,exports){
+var IOTA = require('./lib/iota');
+// Create IOTA instance with host and port as provider
+var iota = new IOTA({
+  'host': 'http://rajiv-shah.ddns.net',
+  'port': 14265
+});
+
+
+var txHash = "";
+
+
+function reattachTx(txHash){
+var quote = "'"
+var quoted = quote.concat(txHash);
+var quotedTxHash = quoted.concat(quote);
+document.getElementById("status").innerHTML = "Reattaching..."
+iota.api.replayBundle(quotedTxHash,
+ 3, 15, function(e,s){console.log(s)});
+
+}
+
+
+function setTxHash(txHash) {
+  txHash = document.getElementById('reattachTxHash');
+  reattachTx(txHash);
+};
+
+function onSubmit(token) {
+  console.log("Success");
+    setTxHash('reattachTxHash');
+  };
+
+},{"./lib/iota":9}],16:[function(require,module,exports){
 (function (process,global){
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
@@ -17740,4 +17740,4 @@ function extend() {
     return target
 }
 
-},{}]},{},[1]);
+},{}]},{},[15]);
