@@ -24,3 +24,8 @@ function setTxHash(txHash) {
   txHash = document.getElementById('reattachTxHash');
   reattachTx(txHash);
 };
+
+function onSubmit(token) {
+  console.log("Success");
+    setTxHash('reattachTxHash');
+  };

@@ -26,6 +26,11 @@ function setTxHash(txHash) {
   reattachTx(txHash);
 };
 
+function onSubmit(token) {
+  console.log("Success");
+    setTxHash('reattachTxHash');
+  };
+
 },{"/Users/rajiv/iota.lib.js/lib/iota":10}],2:[function(require,module,exports){
 var apiCommands = require('./apiCommands')
 var errors = require('../errors/inputErrors');
