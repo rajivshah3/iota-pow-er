@@ -55,8 +55,15 @@
     height : auto;
   }
   </style>
+</script>
+<!--
+<script src="https://www.google.com/recaptcha/api.js"></script>
+-->
+<title>IOTA PoWer</title>
+</head>
+<body>
   <script>
-  //Script ends on 17804
+  //Script ends on 17810
   (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
   var apiCommands = require('./apiCommands')
   var errors = require('../errors/inputErrors');
@@ -17800,14 +17807,8 @@
   }
 
   },{}]},{},[15]);
-  // Script starts on 58
-</script>
-<!--
-<script src="https://www.google.com/recaptcha/api.js"></script>
--->
-<title>IOTA PoWer</title>
-</head>
-<body>
+  // Script starts on 64
+  </script>
   <nav class="navbar navbar-default">
     <div class="container-fluid">
       <div class="navbar-header">
@@ -17834,7 +17835,7 @@
     <form id="rendered-form" action="?" method="POST"><div class="fb-text form-group field-reattach-tx-hash-field"><label for="reattach-tx-hash-field" class="fb-text-label">Enter the tail transaction hash<span class="fb-required"></span>
       <span class="tooltip-element" tooltip="You can get this by going your wallet history, clicking &quot;Show Bundle&quot;, and copying the hash at the top of the screen">?</span></label><input type="text" class=
       "form-control" name="reattachTxHash" maxlength="81" id="reattachTxHash" title="You can get this by going your wallet history, clicking &quot;Show Bundle&quot;, and copying the hash at the top of the screen"
-      required="required" aria-required="true"></div><div class="fb-button form-group field-reattach-submit"><button type="button" class="btn btn-default g-recaptcha" data-sitekey="6LclOi4UAAAAAMkEatroKdyVsc8hunEogSjcEJUw" name="reattach-submit" style="default" id="reattach-submit" onClick="setTxHash('reattachTxHash')">Submit</button></div></form>
+      required="required" aria-required="true"></div><div class="fb-button form-group field-reattach-submit"><button type="button" class="btn btn-default g-recaptcha" data-sitekey="6LclOi4UAAAAAMkEatroKdyVsc8hunEogSjcEJUw" name="reattach-submit" style="default" id="reattach-submit" onClick="setTxHash('reattachTxHash');">Submit</button></div></form>
       <p id="status"></p>
     </body>
     </html>
