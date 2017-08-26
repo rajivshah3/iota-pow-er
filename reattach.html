@@ -68,9 +68,6 @@
   var txHash = "";
 
 
-         function onSubmit(token) {
-           setTxHash('reattachTxHash');
-         }
 
   function reattachTx(txHash){
   var quote = "'"
@@ -80,13 +77,19 @@
   iota.api.replayBundle(quotedTxHash,
    3, 15, function(e,s){console.log(s)});
 
-  }
+ };
 
 
   function setTxHash(txHash) {
     txHash = document.getElementById('reattachTxHash');
     reattachTx(txHash);
   };
+
+  function onSubmit(token) {
+    console.log("Success");
+      setTxHash('reattachTxHash');
+    };
+
 
   },{"/Users/rajiv/iota.lib.js/lib/iota":10}],2:[function(require,module,exports){
   var apiCommands = require('./apiCommands')
