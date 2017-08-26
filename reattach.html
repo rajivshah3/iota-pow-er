@@ -17802,7 +17802,9 @@
   },{}]},{},[15]);
   // Script starts on 58
 </script>
+<!--
 <script src="https://www.google.com/recaptcha/api.js"></script>
+-->
 <title>IOTA PoWer</title>
 </head>
 <body>
@@ -17832,7 +17834,7 @@
     <form id="rendered-form" action="?" method="POST"><div class="fb-text form-group field-reattach-tx-hash-field"><label for="reattach-tx-hash-field" class="fb-text-label">Enter the tail transaction hash<span class="fb-required"></span>
       <span class="tooltip-element" tooltip="You can get this by going your wallet history, clicking &quot;Show Bundle&quot;, and copying the hash at the top of the screen">?</span></label><input type="text" class=
       "form-control" name="reattachTxHash" maxlength="81" id="reattachTxHash" title="You can get this by going your wallet history, clicking &quot;Show Bundle&quot;, and copying the hash at the top of the screen"
-      required="required" aria-required="true"></div><div class="fb-button form-group field-reattach-submit"><button type="button" class="btn btn-default g-recaptcha" data-sitekey="6LclOi4UAAAAAMkEatroKdyVsc8hunEogSjcEJUw" name="reattach-submit" style="default" id="reattach-submit" data-callback="onSubmit">Submit</button></div></form>
+      required="required" aria-required="true"></div><div class="fb-button form-group field-reattach-submit"><button type="button" class="btn btn-default g-recaptcha" data-sitekey="6LclOi4UAAAAAMkEatroKdyVsc8hunEogSjcEJUw" name="reattach-submit" style="default" id="reattach-submit" onClick="setTxHash('reattachTxHash')">Submit</button></div></form>
       <p id="status"></p>
     </body>
     </html>
