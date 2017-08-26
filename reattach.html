@@ -102,6 +102,11 @@
       var Utils = require("../utils/utils");
       var async = require("async");
 
+      var txHash = "";
+      var onSubmit = function(){};
+      var setTxHash = function(){};
+      var reattachTx = function(){};
+
      'use strict';
 
       /**
@@ -4080,10 +4085,9 @@
       });
 
 
-      var txHash = "";
 
 
-      function reattachTx(txHash){
+    reattachTx = function (txHash){
       var quote = "'"
       var quoted = quote.concat(txHash);
       var quotedTxHash = quoted.concat(quote);
@@ -4094,12 +4098,12 @@
       }
 
 
-      function setTxHash(txHash) {
+      setTxHash = function (txHash) {
         txHash = document.getElementById('reattachTxHash');
         reattachTx(txHash);
       };
 
-      function onSubmit(token) {
+      onSubmit = function (token) {
         console.log("Success");
           setTxHash('reattachTxHash');
         };
