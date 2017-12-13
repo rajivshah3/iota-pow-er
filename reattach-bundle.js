@@ -21041,7 +21041,7 @@ global.reattachTx = function (txHash){
     if(s){
       document.getElementById("status").innerHTML = "Success!";
     }
-    else{
+    if(e){
       document.getElementById("status").innerHTML = "Error";
     }
   });
