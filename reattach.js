@@ -12,9 +12,11 @@ global.reattachTx = function (txHash){
   iota.api.replayBundle(txHash, 3, 14, function(e, s){
     if(s){
       document.getElementById("status").innerHTML = "Success!";
+      console.log(s);
     }
     if(e){
       document.getElementById("status").innerHTML = "Error";
+      console.log(s);
     }
   });
 }
