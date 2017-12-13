@@ -21034,14 +21034,12 @@ var iota = new IOTA({
 });
 
 
-var txHash = "";
-
 
 global.reattachTx = function (txHash){
-document.getElementById("status").innerHTML = "Reattaching...";
-iota.api.replayBundle(txHash,
- 3, 14, function(e,s){console.log(s)});
- 
+  console.log(txHash);
+  iota.api.getNodeInfo(function(e,s){console.log(s)});
+  iota.api.replayBundle(txHash, 3, 14, function(e,s){console.log(s)});
+  document.getElementById("status").innerHTML = "Reattaching...";
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
