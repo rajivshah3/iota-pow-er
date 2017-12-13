@@ -21036,10 +21036,15 @@ var iota = new IOTA({
 
 
 global.reattachTx = function (txHash){
-  console.log(txHash);
-  iota.api.getNodeInfo(function(e,s){console.log(s)});
-  iota.api.replayBundle(txHash, 3, 14, function(e,s){console.log(s)});
   document.getElementById("status").innerHTML = "Reattaching...";
+  iota.api.replayBundle(txHash, 3, 14, function(e, s){
+    if(s){
+      document.getElementById("status").innerHTML = "Success!";
+    }
+    else{
+      document.getElementById("status").innerHTML = "Error";
+    }
+  });
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
