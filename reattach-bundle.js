@@ -21029,7 +21029,7 @@ exports.XMLHttpRequest = function() {
 var IOTA = require('./node_modules/iota.lib.js');
 // Create IOTA instance with host and port as provider
 var iota = new IOTA({
-  'host': 'http://iotanode.us:443',
+  'host': 'https://iotanode.us',
   'port': 443
 });
 
