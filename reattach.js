@@ -16,7 +16,7 @@ global.reattachTx = function (txHash){
     }
     if(e){
       document.getElementById("status").innerHTML = "Error";
-      console.log(s);
+      console.log(e);
     }
   });
 }
