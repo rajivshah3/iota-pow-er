@@ -20684,11 +20684,11 @@ global.promoteTx = function (txHash){
     if (isIncluded) {
       params.interrupt = true
     } else {
-      setTimeout(function () {iota.api.LatestInclusion([tail], checkInclusion)}, checkDelay);
+      setTimeout(function () {iota.api.LatestInclusion(txHash, checkInclusion)}, checkDelay);
     }
   }
-  
-  iota.api.getLatestInclusion([tail], checkInclusion);
+
+  iota.api.getLatestInclusion(txHash, checkInclusion);
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
