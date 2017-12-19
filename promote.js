@@ -1,8 +1,7 @@
 var IOTA = require('iota.lib.js');
 // Create IOTA instance with host and port as provider
 var iota = new IOTA({
-  'host': 'https://iotanode.us',
-  'port': 443
+  'provider': 'https://iotanode.us:443'
 });
 
 
@@ -16,7 +15,10 @@ global.promoteTx = function (txHash){
     tag: "RAJIV9PROMOTER"
   }];
 
-  iota.api.promoteTransaction(txHash, 3, 14, transfer, { interrupt: false, delay: 1000 }, function(e, s){
+var checkDelay = 15000;
+var params = { interrupt: false, delay: 1000 };
+console.log(iota.api.isPromotable([txHash]));
+  iota.api.promoteTransaction(txHash, 3, 14, transfer, params, function(e, s){
     if(s){
       document.getElementById("status").innerHTML = "Success!";
       console.log(s);
@@ -30,9 +32,9 @@ global.promoteTx = function (txHash){
     if (isIncluded) {
       params.interrupt = true
     } else {
-      setTimeout(function () {iota.api.LatestInclusion(txHash, checkInclusion)}, checkDelay);
+      setTimeout(function () {iota.api.getLatestInclusion([txHash], checkInclusion)}, checkDelay);
     }
   }
 
-  iota.api.getLatestInclusion(txHash, checkInclusion);
+  iota.api.getLatestInclusion([txHash], checkInclusion);
 }
