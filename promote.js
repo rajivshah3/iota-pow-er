@@ -16,7 +16,7 @@ global.promoteTx = function (txHash){
     tag: "RAJIV9PROMOTER"
   }];
 
-  iota.api.promoteTransaction(txHash, 3, 14, transfer, { interrupt: false, delay: 0 }, function(e, s){
+  iota.api.promoteTransaction(txHash, 3, 14, transfer, { interrupt: false, delay: 1000 }, function(e, s){
     if(s){
       document.getElementById("status").innerHTML = "Success!";
       console.log(s);
@@ -26,4 +26,13 @@ global.promoteTx = function (txHash){
       console.log(s);
     }
   });
+  function checkInclusion (err, isIncluded) {
+    if (isIncluded) {
+      params.interrupt = true
+    } else {
+      setTimeout(function () {iota.api.LatestInclusion([tail], checkInclusion)}, checkDelay);
+    }
+  }
+  
+  iota.api.getLatestInclusion([tail], checkInclusion);
 }
