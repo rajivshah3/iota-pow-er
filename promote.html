@@ -55,8 +55,8 @@
     height : auto;
   }
   </style>
-<!--
-<script src="https://www.google.com/recaptcha/api.js"></script>
+  <!--
+  <script src="https://www.google.com/recaptcha/api.js"></script>
 -->
 <title>IOTA PoWer</title>
 </head>
@@ -77,19 +77,26 @@
         <ul class="nav navbar-nav">
           <li><a href="index.html">About</a></li>
           <li><a href="transfer.html">Transfer</a></li>
-          <li class="active"><a href="#">Reattach<span class=
+          <li><a href="reattach.html">Reattach</a></li>
+          <li class="active"><a href="#">Promote (beta)<span class=
             "sr-only">(current)</span></a></li>
-          <li><a href="promote.html">Promote (beta)</a></li>
           </ul>
         </li>
       </ul>
     </div>
-    <form id="rendered-form"><div class="fb-text form-group field-reattach-tx-hash-field"><label for="reattach-tx-hash-field" class="fb-text-label">Enter the tail transaction hash<span class="fb-required"></span>
+    <form id="rendered-form"><div class="fb-text form-group field-promote-tx-hash-field"><label for="promote-tx-hash-field" class="fb-text-label">Enter the tail transaction hash<span class="fb-required"></span>
       <span class="tooltip-element" tooltip="You can get this by going your wallet history, clicking &quot;Show Bundle&quot;, and copying the hash at the top of the screen">?</span></label><input type="text" class=
-      "form-control" name="reattachTxHash" maxlength="81" id="reattachTxHash" title="You can get this by going your wallet history, clicking &quot;Show Bundle&quot;, and copying the hash at the top of the screen"
-      required="required" aria-required="true"></div><div class="fb-button form-group field-reattach-submit"><button type="button" class="btn btn-default g-recaptcha" data-sitekey="6LclOi4UAAAAAMkEatroKdyVsc8hunEogSjcEJUw" name="reattach-submit" style="default" id="reattach-submit" onClick="reattachTx(reattachTxHash.value);">Submit</button></div></form>
-     <p id="status"></p>
-     <script src = "reattach-bundle.js"></script>
-     <p>Did this tool help you? Help create more tools like this: <code>RAJQDPHWBXSSSCLXLCUAIALSILPNBFCDRYLKZWWKVCLWXSLPTKAAN9XM9BNDPCDVJMQHLDWVYRYSYSLZCMUTATRK9D</code></p>
+      "form-control" name="promoteTxHash" maxlength="81" id="promoteTxHash" title="You can get this by going your wallet history, clicking &quot;Show Bundle&quot;, and copying the hash at the top of the screen"
+      required="required" aria-required="true"></div><div class="fb-button form-group field-promote-submit"><button type="button" class="btn btn-default g-recaptcha" data-sitekey="6LclOi4UAAAAAMkEatroKdyVsc8hunEogSjcEJUw" name="promote-submit" style="default" id="promote-submit" onClick="promoteTx(promoteTxHash.value);">Submit</button></div></form>
+      <p id="status"></p>
+      <script src = "promote-bundle.js"></script>
+      <p>Did this tool help you? Help create more tools like this: <code>RAJQDPHWBXSSSCLXLCUAIALSILPNBFCDRYLKZWWKVCLWXSLPTKAAN9XM9BNDPCDVJMQHLDWVYRYSYSLZCMUTATRK9D</code></p>
+      <br>
+      <div>
+        <h3>
+          Why Promote?
+        </h3>
+        <p>Promoting a transaction spams transactions that will confirm your transaction. This is more effective than reattaching, which relies on your transaction being selected.</p>
+      </div>
     </body>
     </html>

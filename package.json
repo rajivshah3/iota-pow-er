@@ -6,6 +6,6 @@
   "author": "Rajiv Shah <rajivshah1@icloud.com>",
   "license": "MIT",
   "dependencies": {
-    "iota.lib.js": "^0.4.3"
+    "iota.lib.js": "https://github.com/chrisdukakis/iota.lib.js/#feat/promoteTx"
   }
 }
