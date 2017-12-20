@@ -15572,7 +15572,7 @@ api.prototype.sendTransfer = function(seed, depth, minWeightMagnitude, transfers
             return callback(error)
         }
 
-        self.sendTrytes(trytes, depth, minWeightMagnitude, callback);
+      self.sendTrytes(trytes, depth, minWeightMagnitude, options, callback);
     })
 }
 
@@ -15600,9 +15600,8 @@ api.prototype.promoteTransaction = function(tail, depth, minWeightMagnitude, tra
         return callback(errors.inconsistentSubtangle(tail));
       }
 
-      if (params.interrupt === true) {
-          return callback(null, tail);
-      }
+      if (params.interrupt === true || (typeof(params.interrupt) === 'function' && params.interrupt()))
+        return callback(null, tail);
 
       self.sendTransfer(transfer[0].address, depth, minWeightMagnitude, transfer, {reference: tail}, function(err, res) {
           if (err == null && params.delay > 0) {
@@ -20598,7 +20597,7 @@ module.exports = {
 },{"../crypto/converter/converter":40,"../crypto/curl/curl":42,"../crypto/kerl/kerl":45,"../crypto/signing/signing":47,"./asciiToTrytes":53,"./extractJson":54,"./inputValidator":55,"./makeRequest":56,"bignumber.js":2,"crypto-js":11}],58:[function(require,module,exports){
 module.exports={
   "name": "iota.lib.js",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "Javascript Library for IOTA",
   "main": "./lib/iota.js",
   "scripts": {
@@ -20655,7 +20654,7 @@ module.exports={
 var IOTA = require('iota.lib.js');
 // Create IOTA instance with host and port as provider
 var iota = new IOTA({
-  'provider': 'http://astra2261.startdedicated.net:14265'
+  'provider': 'https://iotanode.us:443'
 });
 
 
