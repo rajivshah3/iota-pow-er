@@ -1,5 +1,4 @@
 var IOTA = require('iota.lib.js');
-// Create IOTA instance with host and port as provider
 var iota = new IOTA({
   'provider': 'https://iotanode.us:443'
 });
@@ -24,7 +23,6 @@ global.promoteTx = function (txHash){
     return count++ >= MAX_PROMOTIONS;
   }
   var params = { interrupt, delay: 1000 };
-  //console.log(iota.api.isPromotable([txHash]));
   iota.api.promoteTransaction(txHash, 3, 14, transfer, params, function(e, s){
     if(s){
       console.log(s);
