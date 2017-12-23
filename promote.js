@@ -7,6 +7,7 @@ var iota = new IOTA({
 
 
 global.promoteTx = function (txHash){
+  var count = 0;
   document.getElementById("status").innerHTML = "Promoting...";
   const transfer = [{
     address: "RAJIV9PROMOTER9999999999999999999999999999999999999999999999999999999999999999999",
@@ -15,12 +16,20 @@ global.promoteTx = function (txHash){
     tag: "RAJIV9PROMOTER"
   }];
 
-var checkDelay = 15000;
-var params = { interrupt: false, delay: 1000 };
-console.log(iota.api.isPromotable([txHash]));
+  var checkDelay = 15000;
+  function interrupt() {
+    console.log(count);
+    return count++ < 5;
+  }
+  var params = {
+    interrupt: () => {
+    console.log(count);
+    return count++ < 5;
+  },
+  delay: 1000 };
+  //console.log(iota.api.isPromotable([txHash]));
   iota.api.promoteTransaction(txHash, 3, 14, transfer, params, function(e, s){
     if(s){
-      document.getElementById("status").innerHTML = "Success!";
       console.log(s);
     }
     if(e){
@@ -29,12 +38,15 @@ console.log(iota.api.isPromotable([txHash]));
     }
   });
   function checkInclusion (err, isIncluded) {
-    if (isIncluded) {
-      params.interrupt = true
+    if (isIncluded[0]) {
+      console.log(isIncluded[0]);
+      params.interrupt = true;
+      document.getElementById("status").innerHTML = "Success!";
     } else {
-      setTimeout(function () {iota.api.getLatestInclusion([txHash], checkInclusion)}, checkDelay);
+      setTimeout(function () {
+        iota.api.getLatestInclusion([txHash], checkInclusion)
+      }, checkDelay);
     }
   }
-
   iota.api.getLatestInclusion([txHash], checkInclusion);
 }
