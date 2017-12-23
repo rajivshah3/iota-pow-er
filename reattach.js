@@ -1,4 +1,4 @@
-var IOTA = require('./node_modules/iota.lib.js');
+var IOTA = require('iota.lib.js');
 var iota = new IOTA({
   'host': 'https://iotanode.us',
   'port': 443
