@@ -8,7 +8,8 @@ var iota = new IOTA({
 
 global.promoteTx = function (txHash){
   var count = 0;
-  document.getElementById("status").innerHTML = "Promoting...";
+  const MAX_PROMOTIONS = 3;
+  document.getElementById("status").innerHTML = `Promoting...${count} of ${MAX_PROMOTIONS}`;
   const transfer = [{
     address: "RAJIV9PROMOTER9999999999999999999999999999999999999999999999999999999999999999999",
     value: 0,
@@ -19,18 +20,15 @@ global.promoteTx = function (txHash){
   var checkDelay = 15000;
   function interrupt() {
     console.log(count);
-    return count++ < 5;
+    document.getElementById("status").innerHTML = `Promoting...${count} of ${MAX_PROMOTIONS}`;
+    return count++ >= MAX_PROMOTIONS;
   }
-  var params = {
-    interrupt: () => {
-    console.log(count);
-    return count++ < 5;
-  },
-  delay: 1000 };
+  var params = { interrupt, delay: 1000 };
   //console.log(iota.api.isPromotable([txHash]));
   iota.api.promoteTransaction(txHash, 3, 14, transfer, params, function(e, s){
     if(s){
       console.log(s);
+      document.getElementById("status").innerHTML = "Success!";
     }
     if(e){
       document.getElementById("status").innerHTML = "Error";
