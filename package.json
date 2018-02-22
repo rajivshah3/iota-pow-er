@@ -4,7 +4,7 @@
   "description": "Outsource your PoW",
   "repository": "https://github.com/rajivshah3/iota-pow-er.git",
   "author": "Rajiv Shah <rajivshah1@icloud.com>",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "dependencies": {
     "iota.lib.js": "^0.4.5"
   }
