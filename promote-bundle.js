@@ -1,4 +1,190 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],2:[function(require,module,exports){
 (function (process,global){
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
@@ -5597,7 +5783,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 })));
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":60}],2:[function(require,module,exports){
+},{"_process":1}],3:[function(require,module,exports){
 /*! bignumber.js v4.1.0 https://github.com/MikeMcl/bignumber.js/LICENCE */
 
 ;(function (globalObj) {
@@ -8333,7 +8519,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
     }
 })(this);
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -8566,7 +8752,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.AES;
 
 }));
-},{"./cipher-core":4,"./core":5,"./enc-base64":6,"./evpkdf":8,"./md5":13}],4:[function(require,module,exports){
+},{"./cipher-core":5,"./core":6,"./enc-base64":7,"./evpkdf":9,"./md5":14}],5:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -9447,7 +9633,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 
 }));
-},{"./core":5,"./evpkdf":8}],5:[function(require,module,exports){
+},{"./core":6,"./evpkdf":9}],6:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -10208,7 +10394,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS;
 
 }));
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -10344,7 +10530,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.enc.Base64;
 
 }));
-},{"./core":5}],7:[function(require,module,exports){
+},{"./core":6}],8:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -10494,7 +10680,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.enc.Utf16;
 
 }));
-},{"./core":5}],8:[function(require,module,exports){
+},{"./core":6}],9:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -10627,7 +10813,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.EvpKDF;
 
 }));
-},{"./core":5,"./hmac":10,"./sha1":29}],9:[function(require,module,exports){
+},{"./core":6,"./hmac":11,"./sha1":30}],10:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -10694,7 +10880,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.format.Hex;
 
 }));
-},{"./cipher-core":4,"./core":5}],10:[function(require,module,exports){
+},{"./cipher-core":5,"./core":6}],11:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -10838,7 +11024,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 
 }));
-},{"./core":5}],11:[function(require,module,exports){
+},{"./core":6}],12:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -10857,7 +11043,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS;
 
 }));
-},{"./aes":3,"./cipher-core":4,"./core":5,"./enc-base64":6,"./enc-utf16":7,"./evpkdf":8,"./format-hex":9,"./hmac":10,"./lib-typedarrays":12,"./md5":13,"./mode-cfb":14,"./mode-ctr":16,"./mode-ctr-gladman":15,"./mode-ecb":17,"./mode-ofb":18,"./pad-ansix923":19,"./pad-iso10126":20,"./pad-iso97971":21,"./pad-nopadding":22,"./pad-zeropadding":23,"./pbkdf2":24,"./rabbit":26,"./rabbit-legacy":25,"./rc4":27,"./ripemd160":28,"./sha1":29,"./sha224":30,"./sha256":31,"./sha3":32,"./sha384":33,"./sha512":34,"./tripledes":35,"./x64-core":36}],12:[function(require,module,exports){
+},{"./aes":4,"./cipher-core":5,"./core":6,"./enc-base64":7,"./enc-utf16":8,"./evpkdf":9,"./format-hex":10,"./hmac":11,"./lib-typedarrays":13,"./md5":14,"./mode-cfb":15,"./mode-ctr":17,"./mode-ctr-gladman":16,"./mode-ecb":18,"./mode-ofb":19,"./pad-ansix923":20,"./pad-iso10126":21,"./pad-iso97971":22,"./pad-nopadding":23,"./pad-zeropadding":24,"./pbkdf2":25,"./rabbit":27,"./rabbit-legacy":26,"./rc4":28,"./ripemd160":29,"./sha1":30,"./sha224":31,"./sha256":32,"./sha3":33,"./sha384":34,"./sha512":35,"./tripledes":36,"./x64-core":37}],13:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -10934,7 +11120,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.lib.WordArray;
 
 }));
-},{"./core":5}],13:[function(require,module,exports){
+},{"./core":6}],14:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11203,7 +11389,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.MD5;
 
 }));
-},{"./core":5}],14:[function(require,module,exports){
+},{"./core":6}],15:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11282,7 +11468,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.mode.CFB;
 
 }));
-},{"./cipher-core":4,"./core":5}],15:[function(require,module,exports){
+},{"./cipher-core":5,"./core":6}],16:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11399,7 +11585,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.mode.CTRGladman;
 
 }));
-},{"./cipher-core":4,"./core":5}],16:[function(require,module,exports){
+},{"./cipher-core":5,"./core":6}],17:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11458,7 +11644,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.mode.CTR;
 
 }));
-},{"./cipher-core":4,"./core":5}],17:[function(require,module,exports){
+},{"./cipher-core":5,"./core":6}],18:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11499,7 +11685,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.mode.ECB;
 
 }));
-},{"./cipher-core":4,"./core":5}],18:[function(require,module,exports){
+},{"./cipher-core":5,"./core":6}],19:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11554,7 +11740,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.mode.OFB;
 
 }));
-},{"./cipher-core":4,"./core":5}],19:[function(require,module,exports){
+},{"./cipher-core":5,"./core":6}],20:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11604,7 +11790,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.pad.Ansix923;
 
 }));
-},{"./cipher-core":4,"./core":5}],20:[function(require,module,exports){
+},{"./cipher-core":5,"./core":6}],21:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11649,7 +11835,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.pad.Iso10126;
 
 }));
-},{"./cipher-core":4,"./core":5}],21:[function(require,module,exports){
+},{"./cipher-core":5,"./core":6}],22:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11690,7 +11876,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.pad.Iso97971;
 
 }));
-},{"./cipher-core":4,"./core":5}],22:[function(require,module,exports){
+},{"./cipher-core":5,"./core":6}],23:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11721,7 +11907,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.pad.NoPadding;
 
 }));
-},{"./cipher-core":4,"./core":5}],23:[function(require,module,exports){
+},{"./cipher-core":5,"./core":6}],24:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11767,7 +11953,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.pad.ZeroPadding;
 
 }));
-},{"./cipher-core":4,"./core":5}],24:[function(require,module,exports){
+},{"./cipher-core":5,"./core":6}],25:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11913,7 +12099,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.PBKDF2;
 
 }));
-},{"./core":5,"./hmac":10,"./sha1":29}],25:[function(require,module,exports){
+},{"./core":6,"./hmac":11,"./sha1":30}],26:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -12104,7 +12290,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.RabbitLegacy;
 
 }));
-},{"./cipher-core":4,"./core":5,"./enc-base64":6,"./evpkdf":8,"./md5":13}],26:[function(require,module,exports){
+},{"./cipher-core":5,"./core":6,"./enc-base64":7,"./evpkdf":9,"./md5":14}],27:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -12297,7 +12483,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.Rabbit;
 
 }));
-},{"./cipher-core":4,"./core":5,"./enc-base64":6,"./evpkdf":8,"./md5":13}],27:[function(require,module,exports){
+},{"./cipher-core":5,"./core":6,"./enc-base64":7,"./evpkdf":9,"./md5":14}],28:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -12437,7 +12623,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.RC4;
 
 }));
-},{"./cipher-core":4,"./core":5,"./enc-base64":6,"./evpkdf":8,"./md5":13}],28:[function(require,module,exports){
+},{"./cipher-core":5,"./core":6,"./enc-base64":7,"./evpkdf":9,"./md5":14}],29:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -12705,7 +12891,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.RIPEMD160;
 
 }));
-},{"./core":5}],29:[function(require,module,exports){
+},{"./core":6}],30:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -12856,7 +13042,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.SHA1;
 
 }));
-},{"./core":5}],30:[function(require,module,exports){
+},{"./core":6}],31:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -12937,7 +13123,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.SHA224;
 
 }));
-},{"./core":5,"./sha256":31}],31:[function(require,module,exports){
+},{"./core":6,"./sha256":32}],32:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -13137,7 +13323,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.SHA256;
 
 }));
-},{"./core":5}],32:[function(require,module,exports){
+},{"./core":6}],33:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -13461,7 +13647,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.SHA3;
 
 }));
-},{"./core":5,"./x64-core":36}],33:[function(require,module,exports){
+},{"./core":6,"./x64-core":37}],34:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -13545,7 +13731,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.SHA384;
 
 }));
-},{"./core":5,"./sha512":34,"./x64-core":36}],34:[function(require,module,exports){
+},{"./core":6,"./sha512":35,"./x64-core":37}],35:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -13869,7 +14055,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.SHA512;
 
 }));
-},{"./core":5,"./x64-core":36}],35:[function(require,module,exports){
+},{"./core":6,"./x64-core":37}],36:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -14640,7 +14826,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS.TripleDES;
 
 }));
-},{"./cipher-core":4,"./core":5,"./enc-base64":6,"./evpkdf":8,"./md5":13}],36:[function(require,module,exports){
+},{"./cipher-core":5,"./core":6,"./enc-base64":7,"./evpkdf":9,"./md5":14}],37:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -14945,7 +15131,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	return CryptoJS;
 
 }));
-},{"./core":5}],37:[function(require,module,exports){
+},{"./core":6}],38:[function(require,module,exports){
 var apiCommands     =   require('./apiCommands')
 var errors          =   require('../errors/inputErrors');
 var inputValidator  =   require('../utils/inputValidator');
@@ -15798,37 +15984,43 @@ api.prototype.getNewAddress = function(seed, options, callback) {
     }
     //  Case 2: no total provided
     //
-    //  Continue calling findTransactions to see if address was already created
+    //  Continue calling wasAddressSpenFrom & findTransactions to see if address was already created
     //  if null, return list of addresses
     //
     else {
 
         async.doWhilst(function(callback) {
-            // Iteratee function
+          // Iteratee function
+          var newAddress = self._newAddress(seed, index, security, checksum)
 
-            var newAddress = self._newAddress(seed, index, security, checksum);
+          if (options.returnAll) {
+            allAddresses.push(newAddress)
+          }
 
-            self.findTransactions({'addresses': Array(newAddress)}, function(error, transactions) {
+          // Increase the index
+          index += 1
 
-                if (error) {
-                    return callback(error);
-                }
-                callback(null, newAddress, transactions)
-            })
-
-        }, function(address, transactions) {
-            // Test function with validity check
-
-            if (options.returnAll) {
-                allAddresses.push(address)
+          self.wereAddressesSpentFrom(newAddress, function (err, res) {
+            if (err) {
+              return callback(err)
             }
 
-            // Increase the index
-            index += 1;
-
             // Validity check
-            return transactions.length > 0;
+            if (res[0]) {
+              callback(null, newAddress, true)
+            } else { // Check for txs if address isn't spent
+              self.findTransactions({'addresses': [newAddress]}, function (err, transactions) {
+                if (err) {
+                  return callback(err)
+                }
 
+                callback(err, newAddress, transactions.length > 0)
+              })
+            }
+          })
+
+        }, function (address, isUsed) {
+          return isUsed
         }, function(err, address) {
             // Final callback
 
@@ -16903,7 +17095,7 @@ api.prototype.isPromotable = function(tail) {
             if (err) {
               rej(err)
             }
-            res(isConsistent.state);
+            res(isConsistent);
         });
     });
     return promise.then(function(val) {
@@ -16911,9 +17103,34 @@ api.prototype.isPromotable = function(tail) {
     });
 }
 
-module.exports = api;
+/**
+ *  Check if an address or list of addresses have been sepnt from
+ *  @method wereAddressesSpentFrom
+ *  @param {string|array} addresses Address or addresses
+ *  @param {function} callback
+ *  @return
+ */
+api.prototype.wereAddressesSpentFrom = function (addresses, callback) {
+  var self = this
 
-},{"../crypto/bundle/bundle":39,"../crypto/converter/converter":40,"../crypto/hmac/hmac":44,"../crypto/signing/signing":47,"../errors/inputErrors":48,"../utils/inputValidator":55,"../utils/utils":57,"./apiCommands":38,"async":1}],38:[function(require,module,exports){
+  if (!Array.isArray(addresses)) {
+    addresses = [addresses]
+  }
+
+  if (addresses.some(function (address) {
+    return !inputValidator.isAddress(address)
+  })) {
+    return callback(errors.invalidAddress())
+  }
+
+  return self.sendCommand(apiCommands.wereAddressesSpentFrom(addresses.map(function (address) {
+    return Utils.noChecksum(address)
+  })), callback)
+}
+
+module.exports = api
+
+},{"../crypto/bundle/bundle":40,"../crypto/converter/converter":41,"../crypto/hmac/hmac":45,"../crypto/signing/signing":48,"../errors/inputErrors":49,"../utils/inputValidator":56,"../utils/utils":58,"./apiCommands":39,"async":2}],39:[function(require,module,exports){
 /**
 *   @method attachToTangle
 *   @param {string} trunkTransaction
@@ -17140,9 +17357,9 @@ var storeTransactions = function(trytes) {
 }
 
 /**
-* @method  returns whether the given tail is consistent
-* @param tail bundle tail hash
-* @returns   {object} command
+*   @method returns whether the given tail is consistent
+*   @param {string} tail bundle tail hash
+*   @returns {object} command
 */
 var checkConsistency = function(hashes) {
 
@@ -17154,6 +17371,20 @@ var checkConsistency = function(hashes) {
     return command;
 }
 
+/**
+*   @method wereAddressesSpentFrom
+*   @param {array} addresses Addresses to check
+*   @returns {object} command
+*/
+var wereAddressesSpentFrom = function (addresses) {
+
+    var command = {
+        'command': 'wereAddressesSpentFrom',
+        'addresses': addresses
+    }
+
+    return command
+}
 
 module.exports = {
     attachToTangle              : attachToTangle,
@@ -17170,10 +17401,11 @@ module.exports = {
     interruptAttachingToTangle  : interruptAttachingToTangle,
     checkConsistency            : checkConsistency,
     broadcastTransactions       : broadcastTransactions,
-    storeTransactions           : storeTransactions
+    storeTransactions           : storeTransactions,
+    wereAddressesSpentFrom      : wereAddressesSpentFrom
 }
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 var Curl = require("../curl/curl");
 var Kerl = require("../kerl/kerl");
 var Converter = require("../converter/converter");
@@ -17352,7 +17584,7 @@ Bundle.prototype.normalizedBundle = function(bundleHash) {
 
 module.exports = Bundle;
 
-},{"../converter/converter":40,"../curl/curl":42,"../helpers/adder":43,"../kerl/kerl":45}],40:[function(require,module,exports){
+},{"../converter/converter":41,"../curl/curl":43,"../helpers/adder":44,"../kerl/kerl":46}],41:[function(require,module,exports){
 /**
  *
  *   Conversion functions
@@ -17548,7 +17780,7 @@ module.exports = {
     fromValue       : fromValue
 };
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 var INT_LENGTH = 12;
 var BYTE_LENGTH = 48;
 var RADIX = 3;
@@ -17842,7 +18074,7 @@ module.exports = {
     words_to_trits: words_to_trits
 };
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 var Converter = require("../converter/converter");
 
 /**
@@ -17959,7 +18191,7 @@ Curl.prototype.transform = function() {
 
 module.exports = Curl
 
-},{"../converter/converter":40}],43:[function(require,module,exports){
+},{"../converter/converter":41}],44:[function(require,module,exports){
 /* copyright Paul Handy, 2017 */
 
 function sum( a, b ) {
@@ -18037,7 +18269,7 @@ function add( a, b ) {
 
 module.exports = add;
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 var Curl = require("../curl/curl");
 var Converter = require("../converter/converter");
 var HMAC_ROUNDS = 27;
@@ -18065,7 +18297,7 @@ hmac.prototype.addHMAC = function(bundle) {
 
 module.exports = hmac;
 
-},{"../converter/converter":40,"../curl/curl":42}],45:[function(require,module,exports){
+},{"../converter/converter":41,"../curl/curl":43}],46:[function(require,module,exports){
 var CryptoJS = require("crypto-js");
 var Converter = require("../converter/converter");
 var Curl = require("../curl/curl");
@@ -18157,7 +18389,7 @@ Kerl.prototype.squeeze = function(trits, offset, length) {
 
 module.exports = Kerl;
 
-},{"../converter/converter":40,"../converter/words":41,"../curl/curl":42,"crypto-js":11}],46:[function(require,module,exports){
+},{"../converter/converter":41,"../converter/words":42,"../curl/curl":43,"crypto-js":12}],47:[function(require,module,exports){
 var Curl = require("../curl/curl");
 var Converter = require("../converter/converter");
 var Bundle = require("../bundle/bundle");
@@ -18368,7 +18600,7 @@ module.exports = {
     validateSignatures  : validateSignatures
 }
 
-},{"../bundle/bundle":39,"../converter/converter":40,"../curl/curl":42,"../helpers/adder":43}],47:[function(require,module,exports){
+},{"../bundle/bundle":40,"../converter/converter":41,"../curl/curl":43,"../helpers/adder":44}],48:[function(require,module,exports){
 var Curl = require("../curl/curl");
 var Kerl = require("../kerl/kerl");
 var Converter = require("../converter/converter");
@@ -18586,10 +18818,13 @@ module.exports = {
     validateSignatures  : validateSignatures
 }
 
-},{"../../errors/inputErrors":48,"../bundle/bundle":39,"../converter/converter":40,"../curl/curl":42,"../helpers/adder":43,"../kerl/kerl":45,"./oldSigning":46}],48:[function(require,module,exports){
+},{"../../errors/inputErrors":49,"../bundle/bundle":40,"../converter/converter":41,"../curl/curl":43,"../helpers/adder":44,"../kerl/kerl":46,"./oldSigning":47}],49:[function(require,module,exports){
 
 module.exports = {
 
+    invalidAddress: function () {
+        return new Error("Invalid address provided");
+    },
     invalidTrytes: function() {
         return new Error("Invalid Trytes provided");
     },
@@ -18631,7 +18866,7 @@ module.exports = {
     }
 }
 
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 
 module.exports = {
 
@@ -18646,7 +18881,7 @@ module.exports = {
   }
 }
 
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 var utils = require("./utils/utils");
 var makeRequest = require('./utils/makeRequest');
 var api = require("./api/api");
@@ -18668,8 +18903,8 @@ IOTA.prototype.setSettings = function(settings) {
     // IF NO SETTINGS, SET DEFAULT TO localhost:14265
     settings = settings || {};
     this.version = require('../package.json').version;
-    this.host = settings.host ? settings.host : "http://localhost";
-    this.port = settings.port ? settings.port : 14265;
+    this.host = settings.host || "http://localhost";
+    this.port = settings.port || 14265;
     this.provider = settings.provider || this.host.replace(/\/$/, '') + ":" + this.port;
     this.sandbox = settings.sandbox || false;
     this.token = settings.token || false;
@@ -18702,7 +18937,7 @@ IOTA.prototype.changeNode = function(settings) {
 
 module.exports = IOTA;
 
-},{"../package.json":58,"./api/api":37,"./multisig/multisig":52,"./utils/inputValidator":55,"./utils/makeRequest":56,"./utils/utils":57}],51:[function(require,module,exports){
+},{"../package.json":59,"./api/api":38,"./multisig/multisig":53,"./utils/inputValidator":56,"./utils/makeRequest":57,"./utils/utils":58}],52:[function(require,module,exports){
 var Converter      =  require('../crypto/converter/converter');
 var Curl           =  require('../crypto/curl/curl');
 var Kerl           =  require('../crypto/kerl/kerl');
@@ -18789,7 +19024,7 @@ Address.prototype.finalize = function (digest) {
 
 module.exports = Address;
 
-},{"../crypto/converter/converter":40,"../crypto/curl/curl":42,"../crypto/kerl/kerl":45,"../crypto/signing/signing":47,"../utils/inputValidator":55,"../utils/utils":57}],52:[function(require,module,exports){
+},{"../crypto/converter/converter":41,"../crypto/curl/curl":43,"../crypto/kerl/kerl":46,"../crypto/signing/signing":48,"../utils/inputValidator":56,"../utils/utils":58}],53:[function(require,module,exports){
 var Signing         =  require('../crypto/signing/signing');
 var Converter       =  require('../crypto/converter/converter');
 var Kerl            =  require('../crypto/kerl/kerl');
@@ -19138,7 +19373,7 @@ Multisig.prototype.addSignature = function(bundleToSign, inputAddress, key, call
 
 module.exports = Multisig;
 
-},{"../crypto/bundle/bundle":39,"../crypto/converter/converter":40,"../crypto/curl/curl":42,"../crypto/kerl/kerl":45,"../crypto/signing/signing":47,"../errors/inputErrors":48,"../utils/inputValidator":55,"../utils/utils":57,"./address":51}],53:[function(require,module,exports){
+},{"../crypto/bundle/bundle":40,"../crypto/converter/converter":41,"../crypto/curl/curl":43,"../crypto/kerl/kerl":46,"../crypto/signing/signing":48,"../errors/inputErrors":49,"../utils/inputValidator":56,"../utils/utils":58,"./address":52}],54:[function(require,module,exports){
 //
 //  Conversion of ascii encoded bytes to trytes.
 //  Input is a string (can be stringified JSON object), return value is Trytes
@@ -19239,7 +19474,7 @@ module.exports = {
     fromTrytes: fromTrytes
 }
 
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 var ascii = require("./asciiToTrytes");
 var inputValidator = require("./inputValidator");
 
@@ -19339,7 +19574,7 @@ function extractJson(bundle) {
 
 module.exports = extractJson;
 
-},{"./asciiToTrytes":53,"./inputValidator":55}],55:[function(require,module,exports){
+},{"./asciiToTrytes":54,"./inputValidator":56}],56:[function(require,module,exports){
 /**
 *   checks if input is correct address
 *
@@ -19478,10 +19713,11 @@ var isArray = function(array) {
 *   @returns {boolean}
 **/
 var isObject = function(object) {
+    var isArray = Array.isArray(object);
+    var isNull = object === null;
 
-    return typeof object === 'object';
-}
-
+    return !isArray && !isNull && typeof object === 'object';
+};
 
 
 /**
@@ -19802,7 +20038,7 @@ module.exports = {
     isUri: isUri
 }
 
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 var async = require("async");
 var errors = require("../errors/requestErrors");
 
@@ -19810,9 +20046,9 @@ function xmlHttpRequest() {
   if (typeof XMLHttpRequest !== 'undefined') {
     return new XMLHttpRequest();
   }
-
+  pretendingNotToRequire = require;
   var module = 'xmlhttprequest';
-  var request = require(module).XMLHttpRequest;
+  var request = pretendingNotToRequire(module).XMLHttpRequest;
   return new request();
 }
 
@@ -20077,7 +20313,9 @@ makeRequest.prototype.prepareResult = function(result, requestCommand, callback)
         'findTransactions'      :   'hashes',
         'getTrytes'             :   'trytes',
         'getInclusionStates'    :   'states',
-        'attachToTangle'        :   'trytes'
+        'attachToTangle'        :   'trytes',
+        'wereAddressesSpentFrom':   'states',
+        'checkConsistency'      :   'state'
     }
 
     var error;
@@ -20121,7 +20359,7 @@ makeRequest.prototype.prepareResult = function(result, requestCommand, callback)
 
 module.exports = makeRequest;
 
-},{"../errors/requestErrors":49,"async":1}],57:[function(require,module,exports){
+},{"../errors/requestErrors":50,"async":2}],58:[function(require,module,exports){
 var inputValidator  =   require("./inputValidator");
 var makeRequest     =   require("./makeRequest");
 var Curl            =   require("../crypto/curl/curl");
@@ -20594,10 +20832,10 @@ module.exports = {
     isBundle            : isBundle
 }
 
-},{"../crypto/converter/converter":40,"../crypto/curl/curl":42,"../crypto/kerl/kerl":45,"../crypto/signing/signing":47,"./asciiToTrytes":53,"./extractJson":54,"./inputValidator":55,"./makeRequest":56,"bignumber.js":2,"crypto-js":11}],58:[function(require,module,exports){
+},{"../crypto/converter/converter":41,"../crypto/curl/curl":43,"../crypto/kerl/kerl":46,"../crypto/signing/signing":48,"./asciiToTrytes":54,"./extractJson":55,"./inputValidator":56,"./makeRequest":57,"bignumber.js":3,"crypto-js":12}],59:[function(require,module,exports){
 module.exports={
   "name": "iota.lib.js",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "Javascript Library for IOTA",
   "main": "./lib/iota.js",
   "scripts": {
@@ -20649,7 +20887,7 @@ module.exports={
   }
 }
 
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 (function (global){
 var IOTA = require('iota.lib.js');
 var iota = new IOTA({
@@ -20701,190 +20939,4 @@ global.promoteTx = function (txHash){
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"iota.lib.js":50}],60:[function(require,module,exports){
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}]},{},[59]);
+},{"iota.lib.js":51}]},{},[60]);

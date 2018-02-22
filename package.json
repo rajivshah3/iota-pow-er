@@ -6,6 +6,9 @@
   "author": "Rajiv Shah <rajivshah1@icloud.com>",
   "license": "GPL-3.0",
   "dependencies": {
-    "iota.lib.js": "^0.4.5"
+    "iota.lib.js": "0.4.7"
+  },
+  "scripts": {
+    "browserify-all": "browserify promote.js -o promote-bundle.js && browserify reattach.js -o reattach-bundle.js && browserify transfer.js -o transfer-bundle.js"
   }
 }
